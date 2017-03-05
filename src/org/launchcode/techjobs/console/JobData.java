@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  * Created by LaunchCode
  */
@@ -69,21 +71,41 @@ public class JobData {
 
         // load data, if not already loaded
         loadData();
+        Pattern pattern=Pattern.compile(value,Pattern.CASE_INSENSITIVE);
 
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
         for (HashMap<String, String> row : allJobs) {
 
-            String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            Matcher m= pattern.matcher(row.get(column));
+            if (m.find()){
                 jobs.add(row);
             }
         }
 
         return jobs;
     }
+    public static ArrayList<HashMap<String, String>> findByValue(String value){
+        loadData();
+        Pattern pattern=Pattern.compile(value,Pattern.CASE_INSENSITIVE);
 
+        ArrayList<HashMap<String, String>> jobs= new ArrayList<>();
+
+
+        for (HashMap<String,String> row: allJobs) {
+            for (String key : row.keySet()){
+                Matcher m= pattern.matcher(row.get(key));
+                if (m.find()){
+                    jobs.add(row);
+                }
+            }
+        }
+
+
+        return jobs;
+
+    }
     /**
      * Read in data from a CSV file and store it in a list
      */
